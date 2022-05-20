@@ -35,7 +35,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: microservices-demo-productcatalogservice
+          ECR_REPOSITORY: microservices-demo-recommendationservice
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .          
