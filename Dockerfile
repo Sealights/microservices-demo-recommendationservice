@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.10-slim
+FROM python:3.7-slim
 
 # get packages
 COPY requirements.txt .
@@ -36,8 +36,15 @@ WORKDIR /recommendationservice
 # add files into working directory
 COPY . .
 
+RUN apt-get install -qq -y build-essential
+RUN apt-get install -qq  -y libffi-dev
+RUN apt-get install -qq  -y git
+RUN pip install sealights-python-agent
+RUN BUILD_NAME=$(date +%F_%T) && sl-python config --appname "otel_recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
+RUN sl-python build
+
 # set listen port
 ENV PORT "8080"
 EXPOSE 8080
 
-ENTRYPOINT ["opentelemetry-instrument", "python", "recommendation_server.py"]
+ENTRYPOINT ["opentelemetry-instrument", "sl-python", "run", "--labid", "integ_test_otel", "python", "recommendation_server.py"]
