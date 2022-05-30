@@ -40,10 +40,13 @@ tracer_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
 
 
 class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
+    def __init__(self, product_catalog_stub):
+        self.product_catalog_stub = product_catalog_stub
+
     def ListRecommendations(self, request, context):
         max_responses = 5
         # fetch list of products from product catalog stub
-        cat_response = product_catalog_stub.ListProducts(demo_pb2.Empty())
+        cat_response = self.product_catalog_stub.ListProducts(demo_pb2.Empty())
         product_ids = [x.id for x in cat_response.products]
         filtered_products = list(set(product_ids)-set(request.product_ids))
         num_products = len(filtered_products)
@@ -82,7 +85,7 @@ if __name__ == "__main__":
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),)
 
     # add class to gRPC server
-    service = RecommendationService()
+    service = RecommendationService(product_catalog_stub)
     demo_pb2_grpc.add_RecommendationServiceServicer_to_server(service, server)
     health_pb2_grpc.add_HealthServicer_to_server(service, server)
 

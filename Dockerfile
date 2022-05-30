@@ -42,6 +42,7 @@ RUN apt-get install -qq  -y git
 RUN pip install sealights-python-agent
 RUN BUILD_NAME=$(date +%F_%T) && sl-python config --appname "otel_recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
 RUN sl-python build
+RUN sl-python pytest --teststage "Unit Tests" -vv test*
 
 # set listen port
 ENV PORT "8080"
