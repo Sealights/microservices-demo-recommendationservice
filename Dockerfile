@@ -14,6 +14,9 @@
 
 FROM python:3.7-slim
 
+ARG RM_DEV_SL_TOKEN=local
+ENV RM_DEV_SL_TOKEN ${RM_DEV_SL_TOKEN}
+
 # get packages
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -40,12 +43,12 @@ RUN apt-get install -qq -y build-essential
 RUN apt-get install -qq  -y libffi-dev
 RUN apt-get install -qq  -y git
 RUN pip install sealights-python-agent
-RUN BUILD_NAME=$(date +%F_%T) && sl-python config --appname "otel_recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
-RUN sl-python build
-RUN sl-python pytest --teststage "Unit Tests" -vv test*
+RUN BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
+RUN sl-python build --token $RM_DEV_SL_TOKEN
+RUN sl-python pytest --token $RM_DEV_SL_TOKEN --teststage "Unit Tests" -vv test*
 
 # set listen port
 ENV PORT "8080"
 EXPOSE 8080
 
-ENTRYPOINT ["opentelemetry-instrument", "sl-python", "run", "--labid", "integ_test_otel", "python", "recommendation_server.py"]
+ENTRYPOINT opentelemetry-instrument --token $RM_DEV_SL_TOKEN python recommendation_server.py
