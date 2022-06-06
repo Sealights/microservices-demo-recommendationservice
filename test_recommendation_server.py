@@ -34,3 +34,4 @@ def test_ListRecommendations(grpc_stub):
 
     assert isinstance(response, ListRecommendationsResponse)
     assert set(response.product_ids) == {"3", "4"}
+    
