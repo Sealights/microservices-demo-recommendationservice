@@ -13,9 +13,9 @@ env:
   GH_TOKEN: ${{ secrets.GH_PAT }}
   GH_USER_NAME: ${{ secrets.GH_USER_NAME }}
   GH_USER_EMAIL: ${{ secrets.GH_USER_EMAIL }}
-  INITIATOR: "checkout"
-  ECR_REPOSITORY: microservices-demo-checkoutservice
-  #IMAGE: "474620256508.dkr.ecr.us-east-2.amazonaws.com/microservices-demo-checkoutservice"
+  INITIATOR: "recommendation"
+  ECR_REPOSITORY: microservices-demo-recommendationservice
+  #IMAGE: "474620256508.dkr.ecr.us-east-2.amazonaws.com/microservices-demo-recommendationservice"
   GH_DEPLOYMENT_REPO: "Sealights/microservices-demo-deployment.git"
   
 jobs:
