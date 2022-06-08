@@ -3,7 +3,6 @@ import pytest as pytest
 from demo_pb2 import ListRecommendationsRequest, ListRecommendationsResponse, ListProductsResponse, Product
 from demo_pb2_grpc import ProductCatalogServiceStub
 
-
 @pytest.fixture(scope='module')
 def grpc_add_to_server():
     from demo_pb2_grpc import add_RecommendationServiceServicer_to_server
