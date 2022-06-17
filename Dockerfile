@@ -62,7 +62,7 @@ RUN apt-get install -qq  -y libffi-dev
 RUN apt-get install -qq  -y git
 RUN pip install sealights-python-agent
 
-RUN if [[ $IS_PR -eq 0 ]]; then \
+RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
     BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none ; \
 else \ 
