@@ -42,8 +42,8 @@ RUN apt-get install -qq -y build-essential
 RUN apt-get install -qq  -y libffi-dev
 RUN apt-get install -qq  -y git
 RUN pip install sealights-python-agent
-RUN BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
-RUN sl-python build --token $RM_DEV_SL_TOKEN
+RUN BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --labid integ_master_813e_SLBoutique --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
+RUN sl-python build --token $RM_DEV_SL_TOKEN --labid integ_master_813e_SLBoutique
 RUN sl-python pytest --token $RM_DEV_SL_TOKEN --teststage "Unit Tests" -vv test*
 
 # set listen port
