@@ -1,7 +1,6 @@
 import pytest as pytest
 
 from demo_pb2 import ListRecommendationsRequest, ListRecommendationsResponse, ListProductsResponse, Product
-from demo_pb2_grpc import ProductCatalogServiceStub
 
 @pytest.fixture(scope='module')
 def grpc_add_to_server():
@@ -11,14 +10,14 @@ def grpc_add_to_server():
 
 @pytest.fixture(scope='module')
 def grpc_servicer(module_mocker):
+    module_mocker.patch("init_tracing.init_tracer_provider")
     from recommendation_server import RecommendationService
-    mock_channel = module_mocker.patch("grpc.Channel", autospec=True)
-    product_catalog_service = ProductCatalogServiceStub(mock_channel)
     response = ListProductsResponse(products=[
         Product(id="1"), Product(id="2"), Product(id="3"), Product(id="4")
     ])
-    module_mocker.patch.object(product_catalog_service, "ListProducts").return_value = response
-    return RecommendationService(product_catalog_service)
+    mock_product_catalog_service = module_mocker.patch("demo_pb2_grpc.ProductCatalogService", autospec=True).return_value
+    module_mocker.patch.object(mock_product_catalog_service, "ListProducts").return_value = response
+    return RecommendationService(mock_product_catalog_service)
 
 
 @pytest.fixture(scope='module')
