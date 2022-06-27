@@ -19,9 +19,9 @@ def init_tracer_provider():
 
 
 def extract_collector_options(sl_token):
-    collector_protocol = get_env("OTEL_AGENT_COLLECTOR_PROTOCOL", key_desc="collector protocol")
+    collector_protocol = get_env("OTEL_AGENT_COLLECTOR_PROTOCOL", default="http", key_desc="collector protocol")
     collector_url = get_env("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", key_desc="collector url", allow_empty=True)
-    collector_port = get_env("OTEL_AGENT_COLLECTOR_PORT", key_desc="collector port")
+    collector_port = get_env("OTEL_AGENT_COLLECTOR_PORT", default="443", key_desc="collector port")
     if not collector_url:
         collector_url = extract_token_collector_url(sl_token, collector_port)
     return collector_url, collector_protocol
