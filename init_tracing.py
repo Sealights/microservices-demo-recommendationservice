@@ -59,4 +59,4 @@ def extract_token_collector_url(sl_token, collector_port):
         logger.fatal(f"empty sl server")
         return ""
     parse_result: ParseResult = urlparse(sl_server)
-    return f"ingest.{parse_result.hostname}:{collector_port}"
+    return f"{parse_result.scheme}://ingest.{parse_result.hostname}:{collector_port}"
