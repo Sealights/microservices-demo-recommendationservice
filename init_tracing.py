@@ -41,6 +41,7 @@ def get_exporter_options():
 
     }
     endpoint: Optional[str] = collector_url
+    logger.info(f"endpoint: {endpoint}, protocol: ${protocol}")
     return {"endpoint": endpoint, "headers": headers}
 
 
