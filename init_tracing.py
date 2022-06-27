@@ -36,12 +36,12 @@ def get_exporter_options():
     sl_token = extract_sl_token()
     collector_url, protocol = extract_collector_options(sl_token)
     headers: Dict[str, str] = {
-        "Authorization": f"Bearer {sl_token}",
+        "authorization": f"Bearer {sl_token}",
         "x-otlp-protocol": protocol
 
     }
     endpoint: Optional[str] = collector_url
-    logger.info(f"endpoint: {endpoint}, protocol: ${protocol}")
+    logger.info(f"OTEL endpoint: {endpoint}, protocol: {protocol}")
     return {"endpoint": endpoint, "headers": headers}
 
 
