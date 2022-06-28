@@ -26,7 +26,7 @@ ENV PYTHONUNBUFFERED=0
 
 RUN apt-get -qq update \
     && apt-get install -y --no-install-recommends \
-    wget
+    wget git
 
 # download the grpc health probe
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.7 && \
@@ -42,7 +42,7 @@ RUN apt-get install -qq -y build-essential
 RUN apt-get install -qq  -y libffi-dev
 RUN apt-get install -qq  -y git
 RUN pip install sealights-python-agent
-RUN BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --labid integ_master_813e_SLBoutique --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm none
+RUN BUILD_NAME=$(date +%F_%T) && sl-python config --token $RM_DEV_SL_TOKEN --labid integ_master_813e_SLBoutique --appname "recommendationservice" --branchname master --buildname "${BUILD_NAME}" --exclude "*venv*" --scm git
 RUN sl-python build --token $RM_DEV_SL_TOKEN --labid integ_master_813e_SLBoutique
 RUN sl-python pytest --token $RM_DEV_SL_TOKEN --teststage "Unit Tests" -vv test*
 
