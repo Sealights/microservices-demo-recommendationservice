@@ -63,7 +63,7 @@ def get_env(env_key, key_desc="", default="", allow_empty=False):
 def extract_token_collector_url(sl_token, collector_port, collector_protocol):
     claims: Dict[str, Any] = jwt.decode(sl_token, key="", algorithms=["RS512"], options={"verify_signature": False}) or {}
     sl_server = claims.get("x-sl-server", None)
-    url_suffix = "/v1/traces" if collector_protocol = "http" else ""
+    url_suffix = "/v1/traces" if collector_protocol == "http" else ""
     if not sl_server:
         logger.fatal(f"empty sl server")
         return ""
