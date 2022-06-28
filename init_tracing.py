@@ -24,14 +24,14 @@ def init_tracer_provider():
 
 
 def extract_collector_options(sl_token):
-    collector_protocol = get_env("OTEL_AGENT_COLLECTOR_PROTOCOL", key_desc="collector protocol")
+    collector_protocol = get_env("OTEL_AGENT_COLLECTOR_PROTOCOL", default="http", key_desc="collector protocol")
     if collector_protocol != "http":
         logger.fatal("only http is supported")
         return None, None
     collector_url = get_env("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", key_desc="collector url", allow_empty=True)
-    collector_port = get_env("OTEL_AGENT_COLLECTOR_PORT", key_desc="collector port")
+    collector_port = get_env("OTEL_AGENT_COLLECTOR_PORT", default="443", key_desc="collector port")
     if not collector_url:
-        collector_url = extract_token_collector_url(sl_token, collector_port)
+        collector_url = extract_token_collector_url(sl_token, collector_port, collector_protocol)
     return collector_url, collector_protocol
 
 
@@ -49,6 +49,7 @@ def get_exporter_options():
 
     }
     endpoint: Optional[str] = collector_url
+    logger.info(f"OTEL endpoint: {endpoint}, protocol: {protocol}")
     return {"endpoint": endpoint, "headers": headers}
 
 
@@ -59,11 +60,12 @@ def get_env(env_key, key_desc="", default="", allow_empty=False):
     return env_value
 
 
-def extract_token_collector_url(sl_token, collector_port):
+def extract_token_collector_url(sl_token, collector_port, collector_protocol):
     claims: Dict[str, Any] = jwt.decode(sl_token, key="", algorithms=["RS512"], options={"verify_signature": False}) or {}
     sl_server = claims.get("x-sl-server", None)
+    url_suffix = "/v1/traces" if collector_protocol = "http" else ""
     if not sl_server:
         logger.fatal(f"empty sl server")
         return ""
     parse_result: ParseResult = urlparse(sl_server)
-    return f"https://ingest.{parse_result.hostname}:{collector_port}/v1/traces"
+    return f"{parse_result.scheme}://ingest.{parse_result.hostname}:{collector_port}{url_suffix]"
