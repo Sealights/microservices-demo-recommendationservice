@@ -68,6 +68,7 @@ def process_queue():
               numberValue = numberValue - 1
               if numberValue == 0:
                 demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty())
+                delete_message(message) 
                 return
             except:
               numberValue = 2               
