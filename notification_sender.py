@@ -3,14 +3,16 @@ import os
 import boto3
 from opentelemetry.instrumentation.boto3sqs import Boto3SQSInstrumentor
 
-
 import demo_pb2
 import demo_pb2_grpc
 
-Boto3SQSInstrumentor().instrument()
-
+import init_tracing
 from logger import getJSONLogger
-logger = getJSONLogger('notificationsender')
+logger = getJSONLogger('recommendationservice-server')
+
+init_tracing.init_tracer_provider()
+
+Boto3SQSInstrumentor().instrument()
 
 region_name = os.environ.get('AWS_REGION', "us-east-2")
 aws_access_key_id = os.environ.get('AWS_US_ACCESS_KEY_ID', "")
