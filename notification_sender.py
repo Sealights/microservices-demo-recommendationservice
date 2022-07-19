@@ -6,11 +6,8 @@ from opentelemetry.instrumentation.boto3sqs import Boto3SQSInstrumentor
 import demo_pb2
 import demo_pb2_grpc
 
-import init_tracing
 from logger import getJSONLogger
 logger = getJSONLogger('recommendationservice-server')
-
-init_tracing.init_tracer_provider()
 
 Boto3SQSInstrumentor().instrument()
 
@@ -69,7 +66,8 @@ def process_queue():
               numberValue = int(message['Body'])
               numberValue = numberValue - 1
               if numberValue == 0:
-                demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty())
+                logger.info("calling ProductCatalogService")
+                logger.info(demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty()))
                 delete_message(message) 
                 return
             except:
