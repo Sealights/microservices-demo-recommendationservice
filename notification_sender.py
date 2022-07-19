@@ -50,7 +50,7 @@ def send_notification_message(message, bodyValue):
     return
 
   return sqs.send_message(
-        QueueUrl='https://sqs.us-east-2.amazonaws.com/474620256508/testQueue',
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/474620256508/EmailQueue',
         DelaySeconds=10,
         MessageBody=str(bodyValue) 
     )  
@@ -70,10 +70,10 @@ def process_queue():
                 demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty())
                 return
             except:
-              numberValue = 2
-              delete_message(message) 
+              numberValue = 2               
             response = send_notification_message(message, numberValue)
             logger.info('SQS send message, response {} .'.format(response['MessageId']))
           except Exception as e: 
-            logger.error('Error during sending message to notification sqs {} .'.format(e))        
+            logger.error('Error during sending message to notification sqs {} .'.format(e))       
+          delete_message(message) 
           
