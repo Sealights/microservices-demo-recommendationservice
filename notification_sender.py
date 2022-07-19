@@ -50,7 +50,7 @@ def send_notification_message(message, bodyValue):
     return
 
   return sqs.send_message(
-        QueueUrl='https://sqs.us-east-2.amazonaws.com/474620256508/testQueue',
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/474620256508/EmailQueue',
         DelaySeconds=10,
         MessageBody=str(bodyValue) 
     )  
