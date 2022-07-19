@@ -26,6 +26,9 @@ import demo_pb2_grpc
 from grpc_health.v1 import health_pb2
 from grpc_health.v1 import health_pb2_grpc
 
+import notification_sender
+import threading
+
 import init_tracing
 from logger import getJSONLogger
 logger = getJSONLogger('recommendationservice-server')
@@ -66,6 +69,11 @@ class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
 
 if __name__ == "__main__":
     logger.info("initializing recommendationservice")
+
+    logger.info("initializing notification message recieving")
+
+    queueThreat = threading.Thread(target=notification_sender.process_queue, args=[])
+    queueThreat.start()
 
     port = os.environ.get('PORT', "8080")
     catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
