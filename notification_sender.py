@@ -3,6 +3,10 @@ import os
 import boto3
 from opentelemetry.instrumentation.boto3sqs import Boto3SQSInstrumentor
 
+
+import demo_pb2
+import demo_pb2_grpc
+
 Boto3SQSInstrumentor().instrument()
 
 from logger import getJSONLogger
@@ -40,6 +44,16 @@ def receive_message():
         'All'
       ],
   )
+  
+def send_notification_message(message, bodyValue):
+  if endpoint_notification_url == "":
+    return
+
+  return sqs.send_message(
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/474620256508/testQueue',
+        DelaySeconds=10,
+        MessageBody=str(bodyValue) 
+    )  
 
 def process_queue():  
   while True:
@@ -47,4 +61,19 @@ def process_queue():
     if "Messages" in response:   
       for message in response["Messages"]:
           logger.info(f"Recived message: {message}")
-          delete_message(message) 
+          try:
+            numberValue = 0
+            try:
+              numberValue = int(message['Body'])
+              numberValue = numberValue - 1
+              if numberValue == 0:
+                demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty())
+                return
+            except:
+              numberValue = 2
+              delete_message(message) 
+            response = send_notification_message(message, numberValue)
+            logger.info('SQS send message, response {} .'.format(response['MessageId']))
+          except Exception as e: 
+            logger.error('Error during sending message to notification sqs {} .'.format(e))        
+          
