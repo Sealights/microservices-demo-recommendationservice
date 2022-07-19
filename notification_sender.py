@@ -70,10 +70,10 @@ def process_queue():
                 demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty())
                 return
             except:
-              numberValue = 2
-              delete_message(message) 
+              numberValue = 2               
             response = send_notification_message(message, numberValue)
             logger.info('SQS send message, response {} .'.format(response['MessageId']))
           except Exception as e: 
-            logger.error('Error during sending message to notification sqs {} .'.format(e))        
+            logger.error('Error during sending message to notification sqs {} .'.format(e))       
+          delete_message(message) 
           
