@@ -1,4 +1,5 @@
 import os
+import grpc
 
 import boto3
 from opentelemetry.instrumentation.boto3sqs import Boto3SQSInstrumentor
@@ -59,22 +60,28 @@ def process_queue():
     response = receive_message()
     if "Messages" in response:   
       for message in response["Messages"]:
-          logger.info(f"Recived message: {message}")
-          try:
-            numberValue = 0
-            try:
-              numberValue = int(message['Body'])
-              numberValue = numberValue - 1
-              if numberValue == 0:
-                logger.info("calling ProductCatalogService")
-                logger.info(demo_pb2_grpc.ProductCatalogService.ListProducts(demo_pb2.Empty()))
-                delete_message(message) 
-                return
-            except:
-              numberValue = 2               
-            response = send_notification_message(message, numberValue)
-            logger.info('SQS send message, response {} .'.format(response['MessageId']))
-          except Exception as e: 
-            logger.error('Error during sending message to notification sqs {} .'.format(e))       
-          delete_message(message) 
+        logger.info(f"Recived message: {message}")
+        numberValue = 0
+        try:
+          numberValue = int(message['Body'])
+          numberValue = numberValue - 1
+          if numberValue == 0:
+            logger.info("calling ProductCatalogService")
+            call_product_catalog_service()
+            delete_message(message) 
+            continue
+        except:
+          numberValue = 2               
+        response = send_notification_message(message, numberValue)
+        logger.info('SQS send message, response {} .'.format(response['MessageId']))
+        delete_message(message) 
           
+def call_product_catalog_service():
+  try:
+    catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
+    channel = grpc.insecure_channel(catalog_addr)
+    product_catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(channel)
+    product_catalog_stub.ListProducts(demo_pb2.Empty())
+  except Exception as e: 
+       logger.error('Error during calling product catalog service {} .'.format(e))       
+         
