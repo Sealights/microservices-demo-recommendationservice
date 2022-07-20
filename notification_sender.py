@@ -71,7 +71,7 @@ def process_queue():
             delete_message(message) 
             continue
         except:
-          numberValue = 2               
+          numberValue = 1               
         response = send_notification_message(message, numberValue)
         logger.info('SQS send message, response {} .'.format(response['MessageId']))
         delete_message(message) 
