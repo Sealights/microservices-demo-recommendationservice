@@ -60,21 +60,9 @@ def process_queue():
     response = receive_message()
     if "Messages" in response:   
       for message in response["Messages"]:
-        logger.info(f"Recived message: {message}")
-        numberValue = 0
-        try:
-          numberValue = int(message['Body'])
-          numberValue = numberValue - 1
-          if numberValue == 0:
-            logger.info("calling ProductCatalogService")
-            call_product_catalog_service()
-            delete_message(message) 
-            continue
-        except:
-          numberValue = 1               
-        response = send_notification_message(message, numberValue)
-        logger.info('SQS send message, response {} .'.format(response['MessageId']))
+        logger.info(f"Recived message: {message}") 
         delete_message(message) 
+        call_product_catalog_service()
           
 def call_product_catalog_service():
   try:
