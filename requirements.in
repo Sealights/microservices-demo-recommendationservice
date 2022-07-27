@@ -8,6 +8,7 @@ opentelemetry-instrumentation==0.32b0
 opentelemetry-instrumentation-grpc==0.32b0
 opentelemetry-instrumentation-urllib3==0.32b0
 opentelemetry-instrumentation-boto3sqs==0.32b0
+opentelemetry-instrumentation-flask==0.32b0
 opentelemetry-sdk==1.12.0rc2
 python-json-logger==2.0.2
 requests==2.27.1
@@ -18,3 +19,5 @@ pytest-mock==3.7.0
 pytest-grpc==0.8.0
 pyjwt==2.4.0
 boto3==1.24.20
+Flask==2.1.2
+waitress==2.1.2

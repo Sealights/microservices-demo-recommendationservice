@@ -26,6 +26,7 @@ import demo_pb2_grpc
 from grpc_health.v1 import health_pb2
 from grpc_health.v1 import health_pb2_grpc
 
+import recommendation_http_server
 import notification_sender
 import threading
 
@@ -74,6 +75,9 @@ if __name__ == "__main__":
 
     queueThreat = threading.Thread(target=notification_sender.process_queue, args=[])
     queueThreat.start()
+
+    httpServerThreat = threading.Thread(target=recommendation_http_server.RunHttpServer, args=[])
+    httpServerThreat.start()
 
     port = os.environ.get('PORT', "8080")
     catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
