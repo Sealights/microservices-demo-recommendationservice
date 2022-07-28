@@ -39,7 +39,7 @@ def ListRecommendations():
 def RunHttpServer():   
   try:
     logger.info("Starting http serer on port:{}".format(os.environ.get('HTTP_PORT', "8082")) )
-    serve(app, host="[::]", port=os.environ.get('HTTP_PORT', "8082"))
+    serve(app, host="0.0.0.0", port=os.environ.get('HTTP_PORT', "8082"))
   except Exception as e: 
        logger.error('Error during starting http server {} .'.format(e))   
     
