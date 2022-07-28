@@ -50,6 +50,6 @@ RUN sl-python pytest --token $RM_DEV_SL_TOKEN --teststage "Unit Tests" -vv test*
 
 # set listen port
 ENV PORT "8080"
-EXPOSE 8080
+EXPOSE 8080 8082
 
 ENTRYPOINT opentelemetry-instrument python recommendation_server.py
