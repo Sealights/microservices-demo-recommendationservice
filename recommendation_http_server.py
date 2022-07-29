@@ -16,7 +16,10 @@ FlaskInstrumentor().instrument_app(app)
 
 @app.route("/listrecomendation", methods=['GET'])
 def ListRecommendations():
-    req_product_ids = request.args.get('product_ids').split(',')
+    products_ids = request.args.get('product_ids')
+    req_product_ids = []
+    if products_ids != None:
+      req_product_ids = request.args.get('product_ids').split(',')
 
     max_responses = 5
     catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
