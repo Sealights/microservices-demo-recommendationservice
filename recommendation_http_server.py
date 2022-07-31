@@ -6,8 +6,7 @@ import grpc
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from waitress import serve
 import json
-import demo_pb2
-import demo_pb2_grpc
+import requests
 from logger import getJSONLogger
 logger = getJSONLogger('recommendationservice-server')
     
@@ -22,12 +21,10 @@ def ListRecommendations():
       req_product_ids = request.args.get('product_ids').split(',')
 
     max_responses = 5
-    catalog_addr = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR', '')
-    channel = grpc.insecure_channel(catalog_addr)
-    product_catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(channel)
-    cat_response = product_catalog_stub.ListProducts(demo_pb2.Empty())
+ 
+    cat_response = getListProducts()
     
-    product_ids = [x.id for x in cat_response.products]
+    product_ids = [x['id'] for x in cat_response['products']]
     filtered_products = list(set(product_ids)-set(req_product_ids))
     num_products = len(filtered_products)
     num_return = min(max_responses, num_products)
@@ -38,6 +35,13 @@ def ListRecommendations():
     logger.info("[Recv ListRecommendations] product_ids={}".format(prod_list))
     
     return json.dumps({"product_ids": prod_list})
+
+def getListProducts():
+  preod_env = os.environ.get('PRODUCT_CATALOG_SERVICE_ADDR_HTTP', "localhost:3552")
+  URL =  "http://{addr}/listproducts".format(addr=preod_env)
+  r = requests.get(url = URL)  
+  data = r.json()
+  return data
 
 def RunHttpServer():   
   try:
