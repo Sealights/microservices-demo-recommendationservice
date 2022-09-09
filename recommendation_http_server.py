@@ -33,6 +33,7 @@ def ListRecommendations():
 
     prod_list = [filtered_products[i] for i in indices]
     logger.info("[Recv ListRecommendations] product_ids={}".format(prod_list))
+    logger.info("TEST CHANGE")
     
     return json.dumps({"product_ids": prod_list})
 
@@ -41,6 +42,7 @@ def getListProducts():
   URL =  "http://{addr}/listproducts".format(addr=preod_env)
   r = requests.get(url = URL)  
   data = r.json()
+  logger.info("TEST CHANGE")
   return data
 
 def RunHttpServer():   
